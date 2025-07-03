@@ -19,15 +19,7 @@ A continuación, se muestran algunas de las vistas principales de la aplicación
 
 1. Dashboard Principal:
 
-Aquí puedes poner una captura de pantalla de tu dashboard, como la que me mostraste antes.
-
-[Imagen del Dashboard Principal]
-
 2. Gestión de Categorías:
-
-Aquí puedes poner una captura de la página para gestionar categorías.
-
-[Imagen de la página de Gestión de Categorías]
 
 Características Principales
 Autenticación de Usuarios: Sistema completo de registro e inicio de sesión para que cada usuario gestione sus finanzas de forma privada y segura.
