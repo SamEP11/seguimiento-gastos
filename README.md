@@ -25,11 +25,11 @@ A continuación, se muestran algunas de las vistas principales de la aplicación
 
 **1. Dashboard Principal:**
 
-![Dashboard Principal](./capturas%20de%20pantalla/tablero%20principal.png)
+![Dashboard Principal](capturas%20de%20pantalla/tablero%20principal.png)
 
 **2. Gestión de Categorías:**
 
-![Gestión de Categorías](./capturas%20de%20pantalla/gestion-categorias.png)
+![Gestión de Categorías](capturas%20de%20pantalla/gestion-categorias.png)
 
 ---
 
