@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Cuenta{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Crear una Cuenta</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Renderizamos cada campo del formulario manualmente -->
+        {% for field in form %}
+            <div class="mb-4">
+                <label for="{{ field.id_for_label }}" class="block text-gray-700 text-sm font-bold mb-2">{{ field.label }}</label>
+                <input 
+                    type="{{ field.field.widget.input_type }}" 
+                    name="{{ field.name }}" 
+                    id="{{ field.id_for_label }}" 
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="{% if field.name == 'username' %}Elige un nombre de usuario{% endif %}"
+                >
+                <!-- Mostramos errores específicos de cada campo, si los hay -->
+                {% if field.errors %}
+                    <div class="text-red-500 text-xs italic mt-1">
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <button type="submit" class="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline">
+            Registrarse
+        </button>
+    </form>
+    
+    <p class="text-center text-gray-600 text-sm mt-6">
+        ¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="text-indigo-600 hover:underline">Inicia sesión</a>
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Añadir Transacción{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md mt-10">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Añadir Nueva Transacción</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Columna Izquierda -->
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="{{ form.amount.id_for_label }}">Monto</label>
+                {{ form.amount }}
+
+                <label class="block text-gray-700 text-sm font-bold mb-2 mt-4" for="{{ form.category.id_for_label }}">Categoría</label>
+                {{ form.category }}
+            </div>
+            <!-- Columna Derecha -->
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="{{ form.type.id_for_label }}">Tipo</label>
+                {{ form.type }}
+
+                <label class="block text-gray-700 text-sm font-bold mb-2 mt-4" for="{{ form.date.id_for_label }}">Fecha</label>
+                {{ form.date }}
+            </div>
+        </div>
+        
+        <!-- Campo de Descripción -->
+        <div class="mt-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="{{ form.description.id_for_label }}">Descripción (Opcional)</label>
+            {{ form.description }}
+        </div>
+        
+        <button type="submit" class="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline">
+            Guardar Transacción
+        </button>
+    </form>
+</div>
+{% endblock %}
