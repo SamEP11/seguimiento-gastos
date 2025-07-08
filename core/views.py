@@ -16,6 +16,9 @@ from django.http import HttpResponse
 from .forms import RegistrationForm, TransactionForm, CategoryForm
 from .models import Transaction, Category
 
+def index_redirect(request):
+    return redirect('login')
+
 # Vista de Registro (sin cambios)
 def register(request):
     if request.method == 'POST':
