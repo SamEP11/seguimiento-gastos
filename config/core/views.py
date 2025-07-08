@@ -6,12 +6,17 @@ from django.db.models.functions import TruncMonth
 from datetime import datetime
 import json
 from django.contrib import messages
-from django.db import IntegrityError 
+from django.db import IntegrityError
+
+# --- Imports para la exportación a CSV ---
+import csv
+from django.http import HttpResponse
+
 
 from .forms import RegistrationForm, TransactionForm, CategoryForm
 from .models import Transaction, Category
 
-# Vista de Registro
+# Vista de Registro (sin cambios)
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
@@ -26,7 +31,7 @@ def register(request):
         form = RegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
 
-# Vista del Dashboard
+# Vista del Dashboard (sin cambios)
 @login_required
 def dashboard(request):
     current_year = datetime.now().year
@@ -54,7 +59,7 @@ def dashboard(request):
     }
     return render(request, 'dashboard.html', context)
 
-# CRUD de Transacciones 
+# CRUD de Transacciones (sin cambios)
 @login_required
 def add_transaction(request):
     if request.method == 'POST':
@@ -91,14 +96,9 @@ def delete_transaction(request, pk):
         return redirect('dashboard')
     return render(request, 'delete_transaction.html', {'transaction': transaction})
 
-# =================================================================
-# VISTAS CRUD PARA CATEGORÍAS
-# =================================================================
-
+# CRUD de Categorías (sin cambios)
 @login_required
 def manage_categories(request):
-    # Esta vista ahora solo maneja la CREACIÓN de categorías (POST)
-    # y la visualización de la lista (GET). La edición se separa.
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():
@@ -109,10 +109,9 @@ def manage_categories(request):
                 messages.success(request, f"¡Categoría '{category.name}' creada con éxito!")
             except IntegrityError:
                 messages.error(request, 'Ya existe una categoría con ese nombre.')
-            return redirect('manage_categories')
+            return redirect('manage_categories') 
     else:
         form = CategoryForm()
-
     categories = Category.objects.filter(user=request.user).order_by('name')
     context = {
         'form': form,
@@ -122,11 +121,8 @@ def manage_categories(request):
 
 @login_required
 def update_category(request, pk):
-    # Obtenemos la categoría a editar, asegurando que es del usuario.
     category = get_object_or_404(Category, pk=pk, user=request.user)
-    
     if request.method == 'POST':
-        # Si se envía el formulario, procesamos los datos
         form = CategoryForm(request.POST, instance=category)
         if form.is_valid():
             try:
@@ -136,26 +132,59 @@ def update_category(request, pk):
             except IntegrityError:
                 messages.error(request, 'Ya existe otra categoría con ese nombre.')
     else:
-        # Si es un GET, mostramos el formulario pre-llenado
         form = CategoryForm(instance=category)
-
-    # Obtenemos todas las categorías para mostrarlas en la lista de la derecha
     categories = Category.objects.filter(user=request.user).order_by('name')
     context = {
         'form': form,
         'categories': categories
     }
-    # Reutilizamos la misma plantilla, pero con el formulario de edición
     return render(request, 'manage_categories.html', context)
 
 @login_required
 def delete_category(request, pk):
     category = get_object_or_404(Category, pk=pk, user=request.user)
-    
     if request.method == 'POST':
         category_name = category.name
         category.delete()
         messages.success(request, f"Categoría '{category_name}' eliminada con éxito.")
         return redirect('manage_categories')
-        
     return render(request, 'delete_category.html', {'category': category})
+
+# =================================================================
+# NUEVA VISTA PARA EXPORTAR TRANSACCIONES A CSV
+# =================================================================
+@login_required
+def export_transactions_csv(request):
+    # 1. Crear la respuesta HTTP con las cabeceras CSV
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="reporte_transacciones.csv"'
+
+    # 2. Crear un "escritor" de CSV que escriba en la respuesta
+    writer = csv.writer(response)
+
+    # 3. Escribir la fila de encabezado
+    writer.writerow(['Fecha', 'Tipo', 'Categoría', 'Monto', 'Descripción'])
+
+    # 4. Obtener los parámetros de fecha del Dashboard
+    year = request.GET.get('year', datetime.now().year)
+    month = request.GET.get('month', datetime.now().month)
+
+    # 5. Filtrar las transacciones del usuario para ese período
+    transactions = Transaction.objects.filter(
+        user=request.user, 
+        date__year=year, 
+        date__month=month
+    ).order_by('date')
+
+    # 6. Escribir cada transacción en una fila del CSV
+    for transaction in transactions:
+        writer.writerow([
+            transaction.date,
+            transaction.type,
+            transaction.category.name if transaction.category else 'Sin Categoría',
+            transaction.amount,
+            transaction.description
+        ])
+
+    # 7. Devolver la respuesta al navegador
+    return response

@@ -14,4 +14,5 @@ urlpatterns = [
     path('category/<int:pk>/update/', views.update_category, name='update_category'),
     path('category/<int:pk>/delete/', views.delete_category, name='delete_category'),
     path('categories/', views.manage_categories, name='manage_categories'),
+    path('export/csv/', views.export_transactions_csv, name='export_csv'),
 ]
