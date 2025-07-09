@@ -19,8 +19,6 @@ Puedes probar la aplicación en vivo sin necesidad de registrarte usando las sig
 * **Usuario:** `demo`
 * **Contraseña:** `demo1234`
 
-*(Nota: Te recomiendo crear este usuario 'demo' en tu aplicación y añadirle transacciones de ejemplo para que los reclutadores vean el dashboard con datos).*
-
 ---
 
 ## ✨ Características Principales
